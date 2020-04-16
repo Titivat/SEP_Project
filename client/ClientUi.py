@@ -1,44 +1,28 @@
 import sys
 import random
 import time
-import zmq
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 import time
 from threading import Thread
+from MessageThread import MessageThread
     
-class Simple_timer_window(QWidget):
+class ClientUi(QWidget):
     
-    def __init__(self):
-        self.HEADER = 5
-
-        self.id = str( random.randrange(0, 101) )
-        print( 'Id = ', self.id )
-        self.recive = False
-
-        self.context = zmq.Context()
-        self.socket_push = self.context.socket(zmq.PUSH)
-        self.socket_sub = self.context.socket(zmq.SUB)
-        self.socket_push.connect('tcp://127.0.0.1:5557')
-        self.socket_sub.connect('tcp://127.0.0.1:5558')
-
-        self.socket_sub.subscribe('')
-        
+    def __init__(self):       
         QWidget.__init__(self, None)
         self.resize( 1000, 500 )
         vbox = QVBoxLayout()
         self.textEdit1 = QTextEdit( self )
         vbox.addWidget( self.textEdit1 )
 
-        self.textEdit1.textChanged.connect( self.updatePoision )
-
-        self.receive_thread = Thread( target= self.update )
-        self.receive_thread.start()
+        #self.textEdit1.textChanged.connect( self.reciveData )
+        #self.connect( self.receive_thread , SIGNAL('MESSAGE'))
         
         self.setLayout(vbox)
-        self.show()
+        #self.show()
         
-    def updatePoision( self ):
+    def sendData( self ):
 
         if self.recive == True:
             print('not sending the same message')
@@ -46,11 +30,15 @@ class Simple_timer_window(QWidget):
         else:
             texteditMessage = self.textEdit1.toPlainText()
             print(f'{ self.id :<{self.HEADER}}')
-            message = f'{ self.id :<{self.HEADER}}' + texteditMessage[-1]
+
+            try:
+                message = f'{ self.id :<{self.HEADER}}' + texteditMessage[-1]
+            except:
+                pass
 
             self.socket_push.send_string( message )
 
-    def update(self):
+    def reciveData(self):
         
         while True:
             message = self.socket_sub.recv_string()
@@ -63,8 +51,9 @@ class Simple_timer_window(QWidget):
                 self.textEdit1.append( message[self.HEADER:] )
                 self.recive = True
 
-if __name__ == '__main__':
+""" if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     w = Simple_timer_window()
     sys.exit(app.exec_())
+ """

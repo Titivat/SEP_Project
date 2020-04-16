@@ -1,7 +1,9 @@
 import random
 import time
 import zmq
-
+import pickle
+from datetime import datetime
+        
 if __name__ == '__main__':
     context = zmq.Context()
     socket_push = context.socket(zmq.PUSH)
@@ -12,8 +14,12 @@ if __name__ == '__main__':
     socket_sub.subscribe('')
 
     while True:
-        message = '%f %d' % (time.time(), random.randint(1, 10000))
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        message = pickle.dumps( current_time )
         print('Sending:', message)
-        socket_push.send_string(message)
-        message = socket_sub.recv_string()
-        print('Received:', message)
+        socket_push.send(message)
+
+        time.sleep( 2 )
+        
