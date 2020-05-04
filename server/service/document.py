@@ -27,3 +27,33 @@ def create():
     except Exception as e:
         return jsonify({"msg": str(e),
             "success": False}), 400
+
+@app.route('/document/<id>', methods=['DELETE', 'PUT'])
+@jwt_required
+def modify(id):
+    if not id:
+        return jsonify({"msg": "missing id",
+            "success": False}), 400
+    if request.method == 'DELETE':
+        try:
+            user = get_jwt_identity()
+            controller.remove_document(id, user)
+            return jsonify({"success": True})
+        except Exception as e:
+            return jsonify({"msg": str(e),
+                "success": False}), 400
+    else:
+        try:
+            name = request.json.get('name', None)
+            user = get_jwt_identity()
+            if not name:
+                return jsonify({"msg": "missing name",
+                    "success": False}), 400
+            controller.rename_document(id, user, name)
+            return jsonify({"success": True})
+        except IntegrityError as e:
+            return jsonify({"msg": "Integrity constraint failed",
+                "success": False}), 400
+        except Exception as e:
+            return jsonify({"msg": str(e),
+                "success": False}), 400
