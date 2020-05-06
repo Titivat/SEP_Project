@@ -10,7 +10,7 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 import resources_rc
 
-class Ui_MainWindow(object):
+class Login_view(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.NonModal)
@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         self.passwordicon.setText("")
         self.passwordicon.setPixmap(QtGui.QPixmap(":/icon/password_icon.png"))
         self.passwordicon.setObjectName("passwordicon")
+
         self.loginicon = QtWidgets.QLabel(self.centralwidget)
         self.loginicon.setGeometry(QtCore.QRect(80, 60, 131, 121))
         self.loginicon.setText("")
@@ -39,6 +40,7 @@ class Ui_MainWindow(object):
         self.logintext.setGeometry(QtCore.QRect( 90, 10, 81, 41))
         self.logintext.setObjectName("logintext")
         self.logintext.resize( 200 , 50 )
+        self.logintext.setStyleSheet(" color: #FFFFFF; font-size: 30px;font-weight: bold;")
         
         self.useredit = QtWidgets.QLineEdit(self.centralwidget)
         self.useredit.setGeometry(QtCore.QRect(80, 190, 161, 41))
@@ -46,10 +48,12 @@ class Ui_MainWindow(object):
         self.useredit.setInputMask("")
         self.useredit.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.useredit.setObjectName("useredit")
+
         self.passwordedit = QtWidgets.QLineEdit(self.centralwidget)
         self.passwordedit.setGeometry(QtCore.QRect(80, 240, 161, 41))
         self.passwordedit.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.passwordedit.setObjectName("passwordedit")
+
         self.wallpaper = QtWidgets.QLabel(self.centralwidget)
         self.wallpaper.setGeometry(QtCore.QRect(0, 0, 1000, 500))
         self.wallpaper.setStyleSheet("background-image: url(:/background/enterBackground - Copy.jpg);")
@@ -61,7 +65,7 @@ class Ui_MainWindow(object):
         self.registerbutton.setObjectName("registerbutton")
         self.registerbutton.setGeometry( QtCore.QRect( 40 , 290 , 93, 28) )
         self.registerbutton.resize( 200 , 30 )
-        
+
         self.loginbutton = QtWidgets.QPushButton(self.centralwidget)
         self.loginbutton.setGeometry(QtCore.QRect(40, 330, 93, 28))
         self.loginbutton.setObjectName("loginbutton")
@@ -99,11 +103,11 @@ class Ui_MainWindow(object):
 
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     MainWindow = QtWidgets.QMainWindow()
+#     ui = Ui_MainWindow()
+#     ui.setupUi(MainWindow)
+#     MainWindow.show()
+#     sys.exit(app.exec_())
