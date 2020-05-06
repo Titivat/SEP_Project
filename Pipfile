@@ -8,6 +8,8 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
+diff-match-patch = "*"
+zmq = "*"
 
 [dev-packages]
 pylint = "*"
