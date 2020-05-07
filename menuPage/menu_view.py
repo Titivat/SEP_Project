@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Menu_ui.ui'
+# Form implementation generated from reading ui file 'Menu_ui2.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PySide2 import QtCore, QtGui, QtWidgets
+import resources_rc
 
-class Ui_MainWindow(object):
+class Menu_view(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Main_Menu")
+        MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -20,26 +20,31 @@ class Ui_MainWindow(object):
         self.wallpaper.setText("")
         self.wallpaper.setPixmap(QtGui.QPixmap(":/background/menuBackground.png"))
         self.wallpaper.setObjectName("wallpaper")
+        
         self.menupic = QtWidgets.QLabel(self.centralwidget)
         self.menupic.setGeometry(QtCore.QRect(60, 30, 151, 141))
         self.menupic.setText("")
         self.menupic.setPixmap(QtGui.QPixmap(":/icon/menu_user_icon.png"))
         self.menupic.setObjectName("menupic")
+
         self.adddrivepic = QtWidgets.QLabel(self.centralwidget)
         self.adddrivepic.setGeometry(QtCore.QRect(30, 220, 41, 41))
         self.adddrivepic.setText("")
         self.adddrivepic.setPixmap(QtGui.QPixmap(":/icon/add_icon.png"))
         self.adddrivepic.setObjectName("adddrivepic")
+
         self.mydrivepic = QtWidgets.QLabel(self.centralwidget)
         self.mydrivepic.setGeometry(QtCore.QRect(30, 280, 41, 41))
         self.mydrivepic.setText("")
         self.mydrivepic.setPixmap(QtGui.QPixmap(":/icon/myDirveIcon.jpg"))
         self.mydrivepic.setObjectName("mydrivepic")
+
         self.sharedrivepic = QtWidgets.QLabel(self.centralwidget)
         self.sharedrivepic.setGeometry(QtCore.QRect(30, 340, 41, 41))
         self.sharedrivepic.setText("")
         self.sharedrivepic.setPixmap(QtGui.QPixmap(":/icon/shareIcon.png"))
         self.sharedrivepic.setObjectName("sharedrivepic")
+
         self.adddocbutton = QtWidgets.QPushButton(self.centralwidget)
         self.adddocbutton.setGeometry(QtCore.QRect(72, 227, 121, 31))
         self.adddocbutton.setStyleSheet("\n"
@@ -47,6 +52,7 @@ class Ui_MainWindow(object):
         self.adddocbutton.setCheckable(False)
         self.adddocbutton.setAutoRepeat(False)
         self.adddocbutton.setObjectName("adddocbutton")
+        
         self.mydrivebutton = QtWidgets.QPushButton(self.centralwidget)
         self.mydrivebutton.setGeometry(QtCore.QRect(72, 287, 121, 31))
         self.mydrivebutton.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -64,9 +70,16 @@ class Ui_MainWindow(object):
         self.logoutpic.setText("")
         self.logoutpic.setPixmap(QtGui.QPixmap(":/icon/logoutIcon.png"))
         self.logoutpic.setObjectName("logoutpic")
+
         self.pagestatus = QtWidgets.QLabel(self.centralwidget)
-        self.pagestatus.setGeometry(QtCore.QRect(460, -10, 351, 91))
+        self.pagestatus.setGeometry(QtCore.QRect( 390 , 10, 360, 80 ))
         self.pagestatus.setObjectName("pagestatus")
+        self.pagestatus.resize( 460 , 100 )
+
+        self.listWidget = QtWidgets.QListWidget(self.centralwidget)
+        self.listWidget.setGeometry(QtCore.QRect(300, 120, 671, 311))
+        self.listWidget.setObjectName("listWidget")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 30))
@@ -87,14 +100,12 @@ class Ui_MainWindow(object):
         self.sharedrivebutton.setText(_translate("MainWindow", "Share Drive"))
         self.logoutbutton.setText(_translate("MainWindow", "Log Out"))
         self.pagestatus.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:600;\">My Drive</span></p></body></html>"))
-import resources_rc
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     MainWindow = QtWidgets.QMainWindow()
+#     ui = Menu_view()
+#     ui.setupUi(MainWindow)
+#     MainWindow.show()
+#     sys.exit(app.exec_())
