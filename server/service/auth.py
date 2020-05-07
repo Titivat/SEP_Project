@@ -7,9 +7,11 @@ from flask_jwt_extended import (
 )
 from .. import app, db, jwt
 from server.model import user
-from server.controller import auth as controller
+from server.controller.auth import AuthController
 
 blacklist = set()
+
+controller = AuthController()
 
 @jwt.token_in_blacklist_loader
 def token_in_blacklist(token):

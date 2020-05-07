@@ -1,18 +1,18 @@
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
-    create_access_token,
     jwt_required,
-    get_jwt_identity,
-    get_raw_jwt
+    get_jwt_identity
 )
 from .. import app, db
-from server.controller import document as controller
+from server.controller.document import DocumentController
 from server.model import user, document
 from sqlalchemy.exc import IntegrityError
 
+controller = DocumentController(db)
+
 @app.route('/document', methods=['POST'])
 @jwt_required
-def create():
+def createDocument():
     try:
         name = request.json.get('name', None)
         user = get_jwt_identity()
@@ -30,7 +30,7 @@ def create():
 
 @app.route('/document/<id>', methods=['DELETE', 'PUT'])
 @jwt_required
-def modify(id):
+def modifyDocument(id):
     if not id:
         return jsonify({"msg": "missing id",
             "success": False}), 400
@@ -57,3 +57,14 @@ def modify(id):
         except Exception as e:
             return jsonify({"msg": str(e),
                 "success": False}), 400
+
+@app.route('/documents', methods=['GET'])
+@jwt_required
+def retrieveDocuments():
+    try:
+        owner = get_jwt_identity()
+        docs = controller.get_documents(owner)
+        return jsonify({"documents": docs, "success": True})
+    except Exception as e:
+        return jsonify({"msg": str(e),
+            "success": False}), 400
