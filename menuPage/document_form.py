@@ -5,15 +5,15 @@ import PySide2.QtCore
 import PySide2.QtGui
 
 class Document_Form(QDialog):
-    def __init__( self, parent = None ):
+    def __init__( self , parent = None):
         super( Document_Form , self).__init__( parent )
         self.itemN = QtWidgets.QListWidgetItem()
 
         self.widget = QtWidgets.QWidget()
-        widgetText = QtWidgets.QLabel("Document name")
+        self.widgetText = QtWidgets.QLabel( "document_name" )
         widgetButton = QtWidgets.QPushButton("open ducument")
         widgetLayout = QtWidgets.QHBoxLayout()
-        widgetLayout.addWidget(widgetText)
+        widgetLayout.addWidget( self.widgetText )
         widgetLayout.addWidget(widgetButton)
         widgetLayout.addStretch()
 
@@ -29,5 +29,8 @@ class Document_Form(QDialog):
     def getWidget( self ):
         return self.widget
 
+    def set_document_name( self , name ):
+        self.widgetText.setText( name )
+
     def openDocument( self ):
-        print("I love PyQt ")
+        pass

@@ -20,7 +20,7 @@ class Menu_view(object):
         self.wallpaper.setText("")
         self.wallpaper.setPixmap(QtGui.QPixmap(":/background/menuBackground.png"))
         self.wallpaper.setObjectName("wallpaper")
-        
+
         self.menupic = QtWidgets.QLabel(self.centralwidget)
         self.menupic.setGeometry(QtCore.QRect(60, 30, 151, 141))
         self.menupic.setText("")
@@ -61,6 +61,7 @@ class Menu_view(object):
         self.sharedrivebutton.setGeometry(QtCore.QRect(70, 347, 121, 31))
         self.sharedrivebutton.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.sharedrivebutton.setObjectName("sharedrivebutton")
+        
         self.logoutbutton = QtWidgets.QPushButton(self.centralwidget)
         self.logoutbutton.setGeometry(QtCore.QRect(70, 407, 121, 31))
         self.logoutbutton.setStyleSheet("background-color: rgb(255, 255, 255);")
