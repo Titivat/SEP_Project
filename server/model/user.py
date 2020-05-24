@@ -1,22 +1,25 @@
 import datetime
-from .. import db, bcrypt
+from ..base import Base
+import bcrypt
+from sqlalchemy import Column, String, Integer, Binary, DateTime, ForeignKey, Table
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.hybrid import hybrid_property
 from .document import Document
 
-access = db.Table('access',
-    db.Column('document_id', db.Integer, db.ForeignKey('document.id'), primary_key=True),
-    db.Column('username', db.String, db.ForeignKey('user.username'), primary_key=True)
+access = Table('access',
+    Column('document_id', Integer, ForeignKey('document.id'), primary_key=True),
+    Column('username', String, ForeignKey('user.username'), primary_key=True)
 )
 
-class User(db.Model):
+class User(Base):
     __tablename__ = 'user'
 
-    username = db.Column(db.String, primary_key=True)
-    _password = db.Column(db.Binary)
-    created_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    username = Column(String, primary_key=True)
+    _password = Column(Binary)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
 
-    documents = db.relationship('Document', backref='owner')
-    participations = db.relationship('Document', secondary=access, backref=db.backref('participants', lazy='dynamic'))
+    documents = relationship('Document', backref='owner')
+    participations = relationship('Document', secondary=access, backref=backref('participants', lazy='dynamic'))
 
     @hybrid_property
     def password(self):
@@ -24,7 +27,7 @@ class User(db.Model):
 
     @password.setter
     def password(self, plaintext):
-        self._password = bcrypt.generate_password_hash(plaintext, 10)
+        self._password = bcrypt.hashpw(plaintext, bcrypt.gensalt())
 
     def verify_password(self, plaintext):
-        return bcrypt.check_password_hash(self._password, plaintext)
+        return bcrypt.checkpw(plaintext, self._password)

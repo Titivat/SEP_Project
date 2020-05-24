@@ -1,11 +1,12 @@
 import datetime
-from .. import db
+from ..base import Base
+from sqlalchemy import Column, String, Integer, Binary, DateTime, ForeignKey
 
-class Document(db.Model):
+class Document(Base):
     __tablename__ = 'document'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String)
-    user_owner = db.Column(db.String, db.ForeignKey('user.username'))
-    content = db.Column(db.Binary)
-    updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)
+    user_owner = Column(String, ForeignKey('user.username'))
+    content = Column(Binary)
+    updated_date = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

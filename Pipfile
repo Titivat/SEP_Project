@@ -4,13 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-sqlalchemy = "*"
-flask-bcrypt = "*"
-flask-jwt-extended = "*"
+SQLAlchemy = "*"
+PyJWT = "*"
+bcrypt = "*"
+PySide2 = "*"
+msgpack = "*"
 diff-match-patch = "*"
-zmq = "*"
-pyyaml = "*"
 
 [dev-packages]
 pylint = "*"
