@@ -16,27 +16,26 @@ class Main(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
 
-        self.tcpSocket = QTcpSocket(self)
-        self.makeRequest()
-        self.tcpSocket.waitForConnected(1000)
-        self.tcpSocket.readyRead.connect(self.dealCommunication)
-        self.tcpSocket.error.connect(self.displayError)
+        self.socket = QTcpSocket(self)
+        self.socket.waitForConnected(1000)
+        self.socket.readyRead.connect(self.on_read)
+        self.socket.error.connect(self.on_error)
+        self.connect("127.0.0.1", 5000)
 
         self.setGeometry(400, 400, 800, 600)
 
         self.unpacker = msgpack.Unpacker()
 
-        self.editor = Editor(self.tcpSocket)
+        self.editor = Editor(self.socket)
+        self.editor.change_evt.connect(self.on_change)
 
         self.setCentralWidget(self.editor)
     
-    def makeRequest(self):
-        HOST = '127.0.0.1'
-        PORT = 5000
-        self.tcpSocket.connectToHost(HOST, PORT, QIODevice.ReadWrite)
+    def connect(self, host, port):
+        self.socket.connectToHost(host, port, QIODevice.ReadWrite)
     
-    def dealCommunication(self):
-        instr = QDataStream(self.tcpSocket)
+    def on_read(self):
+        instr = QDataStream(self.socket)
         instr.setVersion(QDataStream.Qt_5_0)
         buf = instr.readRawData(1024**2)
         if not buf:
@@ -46,11 +45,16 @@ class Main(QMainWindow):
             logging.info(f"[SERVER] {data}")
             self.editor.update_text(data)
 
-    def displayError(self, socketError):
+    def on_error(self, socketError):
         logging.error(socketError)
+    
+    def on_change(self, diff):
+        bin = msgpack.packb({"patch": diff}, use_bin_type=True)
+        self.socket.write(bin)
 
 class Editor(QPlainTextEdit):
     upd_text = Signal(str)
+    change_evt = Signal(str)
 
     def __init__(self, socket):
         super(Editor, self).__init__()
@@ -80,8 +84,7 @@ class Editor(QPlainTextEdit):
 
         self.text = updated_text
 
-        bin = msgpack.packb({"patch": diff}, use_bin_type=True)
-        self.socket.write(bin)
+        self.change_evt.emit(diff)
     
     @Slot(str)
     def update_text(self, patch):

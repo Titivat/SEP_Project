@@ -8,5 +8,5 @@ _Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
 
-def session():
-    return _Session
+def Session():
+    return _Session()

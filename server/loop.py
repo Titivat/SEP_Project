@@ -1,5 +1,7 @@
 import logging
 import msgpack
+from .base import Session
+from .model import User, Document
 import socketserver
 import threading
 
@@ -30,6 +32,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         self.server.add_client(self)
 
     def handle(self):
+        session = Session()
         unpacker = msgpack.Unpacker()
         while True:
 
@@ -40,9 +43,30 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
             unpacker.feed(buf)
 
             for o in unpacker:
-                for client in self.server.clients:
-                    if client is not self:
-                        client.request.sendall(msgpack.packb(o))
+                if "action" not in o:
+                    continue
+                if o["action"] == "register" and "username" in o and "password" in o:
+                    username = o["username"]
+                    password = o["password"]
+                    user = User(username=username, password=password)
+                    session.add(user)
+                    self.request.sendall(msgpack.packb({"success": True}))
+                elif o["action"] == "login" and "username" in o and "password" in o:
+                    username = o["username"]
+                    password = o["password"]
+                    user = session.query(User).filter(User.username==username).first()
+                    if not user:
+                        logging.error("user not found")
+                        self.request.sendall(msgpack.packb({"success": False, "err": "user not found"}))
+                        continue
+                    if not user.verify_password(password):
+                        logging.error("wrong password")
+                        self.request.sendall(msgpack.packb({"success": False, "err": "wrong password"}))
+                        continue
+                    logging.info("correct password")
+                    self.request.sendall(msgpack.packb({"success": True}))
+
+            session.commit()
     
     def finish(self):
         super().finish()
