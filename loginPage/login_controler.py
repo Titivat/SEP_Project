@@ -17,6 +17,8 @@ class Login_controler( QWidget ):
     
         self.ui = Ui_Form()
         self.ui.setupUi( self )
+        self.ui.registerbutton.setText("Login")
+        self.ui.loginbutton.setText("Register")
 
         self.ui.loginbutton.clicked.connect( self.change_stange_login_button )
         self.ui.registerbutton.clicked.connect( self.change_stage_register_button )
@@ -49,7 +51,7 @@ class Login_controler( QWidget ):
 
         self.ui.logintext.setText( "Register" ) 
         self.ui.logintext.setStyleSheet(" color: #FFFFFF; font-size: 30px;font-weight: bold;")
-        self.ui.logintext.setGeometry( QRect( 85, 10, 150, 41))
+        self.ui.logintext.setGeometry( QRect( 110 , 60, 150, 41))
   
     def login_stage( self ):
       
@@ -58,7 +60,7 @@ class Login_controler( QWidget ):
 
         self.ui.logintext.setText( "Login" ) 
         self.ui.logintext.setStyleSheet(" color: #FFFFFF; font-size: 30px;font-weight: bold;")
-        self.ui.logintext.setGeometry( QRect( 95, 10, 150, 41))
+        self.ui.logintext.setGeometry( QRect( 125  , 60, 150, 41))
 
 #if __name__ == '__main__':
 #    app = QApplication(sys.argv)

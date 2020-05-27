@@ -1,13 +1,15 @@
 import sys
 import PySide2.QtWidgets as QtWidgets
 from PySide2.QtWidgets import QListWidget, QDialog, QApplication, QVBoxLayout , QPushButton
-import PySide2.QtCore
+from PySide2.QtCore import *
 import PySide2.QtGui
 import msgpack
 
 class Document_Form(QDialog):
     def __init__( self , parent = None , socket = None ):
         super( Document_Form , self).__init__( parent )
+        self.parent = parent
+
         self.socket = socket
 
         self.document_id = None
@@ -58,4 +60,5 @@ class Document_Form(QDialog):
         pass
 
     def delete_document_button( self ):
+        self.parent.ui.listWidget.takeItem( self.parent.ui.listWidget.row( self.itemN ) )
         self.socket.write(msgpack.packb({"action":"delete","id": int(self.document_id) })) 
