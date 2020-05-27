@@ -59,7 +59,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     session.add(user)
                     try:
                         session.commit()
-                        self.request.sendall(msgpack.packb({"success": True, "ctx": "register"}))
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "register", "username": user.username}))
                     except Exception as e:
                         session.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "register", "err": str(e)}))
@@ -79,7 +79,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "login", "err": "wrong password"}))
                         continue
                     logging.info("correct password")
-                    self.request.sendall(msgpack.packb({"success": True, "ctx": "login"}))
+                    self.request.sendall(msgpack.packb({"success": True, "ctx": "login", "username": user.username}))
                     self.user = user
                     continue
 
@@ -119,10 +119,16 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 elif o["action"] == "delete" and "id" in o:
                     # Delete document
                     docid = o["id"]
-                    session.query(Document).filter(Document.id==docid).delete()
+                    doc = session.query(Document).filter(Document.id==docid, Document.user_owner==self.user.username).first()
+                    if not doc:
+                        logging.error("document not found")
+                        self.request.sendall(msgpack.packb({"success": False, "ctx": "delete", "err": "document not found"}))
+                        continue
+                    doc.participants = []
+                    session.delete(doc)
                     try:
                         session.commit()
-                        self.request.sendall(msgpack.packb({"success": True, "ctx": "delete"}))
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "delete", "id": doc.id, "name": doc.name}))
                     except Exception as e:
                         session.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "delete", "err": str(e)}))
@@ -145,7 +151,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     # Add participants to document
                     docid = o["id"]
                     participants = o["participants"]
-                    doc = session.query(Document).filter(Document.id==docid).first()
+                    doc = session.query(Document).filter(Document.id==docid, Document.user_owner==self.user.username).first()
                     if not doc:
                         logging.error("document not found")
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": "document not found"}))
@@ -160,6 +166,25 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     except Exception as e:
                         session.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": str(e)}))
+                
+                elif o["action"] == "remove" and "id" in o and "participants" in o:
+                    # Remove participants from document
+                    docid = o["id"]
+                    participants = o["participants"]
+                    doc = session.query(Document).filter(Document.id==docid, Document.user_owner==self.user.username).first()
+                    if not doc:
+                        logging.error("document not found")
+                        self.request.sendall(msgpack.packb({"success": False, "ctx": "remove", "err": "document not found"}))
+                        continue
+                    for participant in doc.participants:
+                        if participant.username in participants:
+                            doc.participants.remove(participant)
+                    try:
+                        session.commit()
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "remove"}))
+                    except Exception as e:
+                        session.rollback()
+                        self.request.sendall(msgpack.packb({"success": False, "ctx": "remove", "err": str(e)}))
 
         session.close()
     
