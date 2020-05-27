@@ -111,7 +111,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     session.add(doc)
                     try:
                         session.commit()
-                        self.request.sendall(msgpack.packb({"success": True, "ctx": "create"}))
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "create", "id": doc.id, "name": doc.name}))
                     except Exception as e:
                         session.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "create", "err": str(e)}))

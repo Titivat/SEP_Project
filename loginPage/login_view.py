@@ -1,113 +1,83 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'login_ui.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.1
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'finalLogin.ui'
+##
+## Created by: Qt User Interface Compiler version 5.14.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+import sys
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
-
-from PySide2 import QtCore, QtGui, QtWidgets
-import resources_rc
-
-class Login_view(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.setWindowModality(QtCore.Qt.NonModal)
-        MainWindow.setEnabled(True)
-        MainWindow.resize(1000, 500)
-        MainWindow.setStyleSheet("")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.usericon = QtWidgets.QLabel(self.centralwidget)
-        self.usericon.setGeometry(QtCore.QRect(40, 190, 41, 41))
-        self.usericon.setText("")
-        self.usericon.setPixmap(QtGui.QPixmap(":/icon/small_user_icon.png"))
-        self.usericon.setObjectName("usericon")
-        self.passwordicon = QtWidgets.QLabel(self.centralwidget)
-        self.passwordicon.setGeometry(QtCore.QRect(40, 240, 41, 41))
-        self.passwordicon.setText("")
-        self.passwordicon.setPixmap(QtGui.QPixmap(":/icon/password_icon.png"))
-        self.passwordicon.setObjectName("passwordicon")
-
-        self.loginicon = QtWidgets.QLabel(self.centralwidget)
-        self.loginicon.setGeometry(QtCore.QRect(80, 60, 131, 121))
-        self.loginicon.setText("")
-        self.loginicon.setPixmap(QtGui.QPixmap(":/icon/user_icon.png"))
-        self.loginicon.setObjectName("loginicon")
-        
-        self.logintext = QtWidgets.QLabel(self.centralwidget)
-        self.logintext.setGeometry(QtCore.QRect( 90, 10, 81, 41))
-        self.logintext.setObjectName("logintext")
-        self.logintext.resize( 200 , 50 )
-        self.logintext.setStyleSheet(" color: #FFFFFF; font-size: 30px;font-weight: bold;")
-        
-        self.useredit = QtWidgets.QLineEdit(self.centralwidget)
-        self.useredit.setGeometry(QtCore.QRect(80, 190, 161, 41))
-        self.useredit.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.useredit.setInputMask("")
-        self.useredit.setEchoMode(QtWidgets.QLineEdit.Normal)
-        self.useredit.setObjectName("useredit")
-
-        self.passwordedit = QtWidgets.QLineEdit(self.centralwidget)
-        self.passwordedit.setGeometry(QtCore.QRect(80, 240, 161, 41))
-        self.passwordedit.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
-        self.passwordedit.setObjectName("passwordedit")
-
-        self.wallpaper = QtWidgets.QLabel(self.centralwidget)
-        self.wallpaper.setGeometry(QtCore.QRect(0, 0, 1000, 500))
-        self.wallpaper.setStyleSheet("background-image: url(:/background/enterBackground - Copy.jpg);")
-        self.wallpaper.setText("")
-        self.wallpaper.setPixmap(QtGui.QPixmap(":/background/enterBackground - Copy.jpg"))
-        self.wallpaper.setObjectName("wallpaper")
-        
-        self.registerbutton = QtWidgets.QPushButton(self.centralwidget)
-        self.registerbutton.setObjectName("registerbutton")
-        self.registerbutton.setGeometry( QtCore.QRect( 40 , 290 , 93, 28) )
-        self.registerbutton.resize( 200 , 30 )
-
-        self.loginbutton = QtWidgets.QPushButton(self.centralwidget)
-        self.loginbutton.setGeometry(QtCore.QRect(40, 330, 93, 28))
-        self.loginbutton.setObjectName("loginbutton")
-        self.loginbutton.resize( 200 , 30 )
-        
+class Ui_Form(object):
+    def setupUi(self, Form):
+        if Form.objectName():
+            Form.setObjectName(u"Form")
+        Form.resize(1000, 500)
+        self.logintext = QLabel(Form)
+        self.logintext.setObjectName(u"logintext")
+        self.logintext.setGeometry(QRect(130, 70, 81, 41))
+        self.usericon = QLabel(Form)
+        self.usericon.setObjectName(u"usericon")
+        self.usericon.setGeometry(QRect(70, 250, 41, 41))
+        self.usericon.setPixmap(QPixmap(u"loginPage/images/small_user_icon.png"))
+        self.passwordicon = QLabel(Form)
+        self.passwordicon.setObjectName(u"passwordicon")
+        self.passwordicon.setGeometry(QRect(70, 300, 41, 41))
+        self.passwordicon.setPixmap(QPixmap(u"loginPage/images/password_icon.png"))
+        self.registerbutton = QPushButton(Form)
+        self.registerbutton.setObjectName(u"registerbutton")
+        self.registerbutton.setGeometry(QRect(130, 360, 93, 28))
+        self.useredit = QLineEdit(Form)
+        self.useredit.setObjectName(u"useredit")
+        self.useredit.setGeometry(QRect(110, 250, 161, 41))
+        self.useredit.setStyleSheet(u"background-color: rgb(255, 255, 255);")
+        self.useredit.setEchoMode(QLineEdit.Normal)
+        self.loginbutton = QPushButton(Form)
+        self.loginbutton.setObjectName(u"loginbutton")
+        self.loginbutton.setGeometry(QRect(130, 390, 93, 28))
+        self.loginicon = QLabel(Form)
+        self.loginicon.setObjectName(u"loginicon")
+        self.loginicon.setGeometry(QRect(110, 120, 131, 121))
+        self.loginicon.setPixmap(QPixmap(u"loginPage/images/user_icon.png"))
+        self.passwordedit = QLineEdit(Form)
+        self.passwordedit.setObjectName(u"passwordedit")
+        self.passwordedit.setGeometry(QRect(110, 300, 161, 41))
+        self.passwordedit.setEchoMode(QLineEdit.PasswordEchoOnEdit)        
+        self.wallpaper = QLabel(Form)
+        self.wallpaper.setObjectName(u"wallpaper")
+        self.wallpaper.setGeometry(QRect(0, 0, 1000, 500))
+        self.wallpaper.setStyleSheet(u"background-image: url(loginPage/images/enterBackground - Copy.jpg);")
+        self.wallpaper.setPixmap(QPixmap(u":/background/enterBackground - Copy.jpg"))
         self.wallpaper.raise_()
+        self.logintext.raise_()
         self.usericon.raise_()
         self.passwordicon.raise_()
-        self.loginicon.raise_()
-        self.logintext.raise_()
-        self.useredit.raise_()
-        self.passwordedit.raise_()
         self.registerbutton.raise_()
+        self.useredit.raise_()
         self.loginbutton.raise_()
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.loginicon.raise_()
+        self.passwordedit.raise_()
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(Form)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.logintext.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600; color:#ffffff;\">Login</span></p></body></html>"))
-        self.useredit.setText(_translate("MainWindow", "Username"))
-        self.passwordedit.setText(_translate("MainWindow", "Password"))
-        self.registerbutton.setText(_translate("MainWindow", "Register"))
-        self.loginbutton.setText(_translate("MainWindow", "Log in"))
+        QMetaObject.connectSlotsByName(Form)
+    # setupUi
 
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.logintext.setText(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-size:18pt; font-weight:600; color:#ffffff;\">Login</span></p></body></html>", None))
+        self.usericon.setText("")
+        self.passwordicon.setText("")
+        self.registerbutton.setText(QCoreApplication.translate("Form", u"Register", None))
+        self.useredit.setInputMask("")
+        self.useredit.setText(QCoreApplication.translate("Form", u"Username", None))
+        self.loginbutton.setText(QCoreApplication.translate("Form", u"Log in", None))
+        self.loginicon.setText("")
+        self.passwordedit.setText(QCoreApplication.translate("Form", u"Password", None))
+        self.wallpaper.setText("")
+    # retranslateUi
 
-
-# if __name__ == "__main__":
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     MainWindow = QtWidgets.QMainWindow()
-#     ui = Ui_MainWindow()
-#     ui.setupUi(MainWindow)
-#     MainWindow.show()
-#     sys.exit(app.exec_())
