@@ -15,8 +15,8 @@ access = Table('access',
 class User(Base):
     __tablename__ = 'user'
 
-    username = Column(String(), primary_key=True)
-    _password = Column(Binary())
+    username = Column(String(), nullable=False, primary_key=True)
+    _password = Column(Binary(), nullable=False)
     created_date = Column(DateTime(), default=datetime.datetime.utcnow)
 
     documents = relationship('Document', backref='owner')
