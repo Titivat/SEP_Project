@@ -232,6 +232,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         logging.error("document not found")
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": "document not found"}))
                         continue
+                    users = db.query(User).filter(User.username.in_(participants)).all()
                     if self.user not in doc.participants:
                         doc.participants.append(self.user)
                     try:
@@ -244,6 +245,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 elif o["action"] == "remove" and "id" in o:
                     # Remove participants from document
                     docid = o["id"]
+                    participants = o["participants"]
                     doc = db.query(Document).filter(Document.id==docid).first()
                     if not doc:
                         logging.error("document not found")
