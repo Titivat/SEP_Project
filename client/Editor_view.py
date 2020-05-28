@@ -25,7 +25,6 @@ class Editor_view(QWidget):
         self.unpacker = msgpack.Unpacker()
 
         self.editor = Editor( self.socket )
-        self.editor.change_evt.connect(self.on_change)
 
         self.console = QPlainTextEdit()
         self.console.setMaximumSize( 1000 , 100 )
