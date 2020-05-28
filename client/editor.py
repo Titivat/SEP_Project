@@ -11,7 +11,7 @@ from random import randint
 class Editor(QPlainTextEdit):
     upd_text = Signal(str)
     change_evt = Signal(str)
-
+#hello world
     def __init__(self, socket):
         super(Editor, self).__init__()
         self.socket = socket
