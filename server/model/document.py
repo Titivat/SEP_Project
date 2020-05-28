@@ -2,11 +2,15 @@ import datetime
 from ..base import Base
 from sqlalchemy import Column, String, Integer, Binary, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
+import uuid
+
+def generate_uuid():
+    return uuid.uuid4().hex
 
 class Document(Base):
     __tablename__ = 'document'
 
-    id = Column(Integer(), primary_key=True, autoincrement=True)
+    id = Column(String(32), primary_key=True, default=generate_uuid)
     name = Column(String(), nullable=False)
     user_owner = Column(String(), ForeignKey('user.username'), nullable=False)
     _content = Column(Binary())

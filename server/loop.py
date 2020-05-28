@@ -222,19 +222,17 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         docs.append({"id": d.id, "name": d.name})
                     self.request.sendall(msgpack.packb({"success": True, "ctx": "shareddocuments", "documents": docs}))
                 
-                elif o["action"] == "add" and "id" in o and "participants" in o:
+                elif o["action"] == "add" and "id" in o:
                     # Add participants to document
                     docid = o["id"]
-                    participants = o["participants"]
-                    doc = db.query(Document).filter(Document.id==docid, Document.user_owner==self.user.username).first()
+                    doc = db.query(Document).filter(Document.id==docid).first()
                     if not doc:
                         logging.error("document not found")
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": "document not found"}))
                         continue
                     users = db.query(User).filter(User.username.in_(participants)).all()
-                    for u in users:
-                        if u is not doc.owner and u not in doc.participants:
-                            doc.participants.append(u)
+                    if self.user not in doc.participants:
+                        doc.participants.append(self.user)
                     try:
                         db.commit()
                         self.request.sendall(msgpack.packb({"success": True, "ctx": "add"}))
@@ -242,18 +240,17 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         db.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": str(e)}))
                 
-                elif o["action"] == "remove" and "id" in o and "participants" in o:
+                elif o["action"] == "remove" and "id" in o:
                     # Remove participants from document
                     docid = o["id"]
                     participants = o["participants"]
-                    doc = db.query(Document).filter(Document.id==docid, Document.user_owner==self.user.username).first()
+                    doc = db.query(Document).filter(Document.id==docid).first()
                     if not doc:
                         logging.error("document not found")
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "remove", "err": "document not found"}))
                         continue
-                    for participant in doc.participants:
-                        if participant.username in participants:
-                            doc.participants.remove(participant)
+                    if self.user in doc.participants:
+                        doc.participants.remove(self.user)
                     try:
                         db.commit()
                         self.request.sendall(msgpack.packb({"success": True, "ctx": "remove"}))

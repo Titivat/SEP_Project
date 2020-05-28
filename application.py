@@ -18,6 +18,8 @@ class Application( QMainWindow ):
         self.socket.error.connect(self.on_error)
         self.connect("127.0.0.1", 5000)
 
+        self._message_box = QMessageBox()
+
         self.unpacker = msgpack.Unpacker()
 
         self.menu_page = menu_controler.Menu_controler( self.socket )
