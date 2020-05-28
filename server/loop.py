@@ -1,9 +1,12 @@
+import datetime
 import logging
 import msgpack
 from .base import Session
 from .model import User, Document
 from diff_match_patch import diff_match_patch
+import os
 import socketserver
+import subprocess
 import threading
 
 class EditSession:
@@ -14,6 +17,7 @@ class EditSession:
     def __init__(self, docid):
         self.clients = set()
         self.db = Session()
+        self.running = False
         self.doc = self.db.query(Document).filter(Document.id==docid).first()
     
     def register(self, socket):
@@ -46,7 +50,25 @@ class EditSession:
                 client.request.sendall(data)
 
     def execute(self, socket):
-        pass
+        if self.running:
+            return
+        self.running = True
+
+        filename = str(datetime.datetime.now().timestamp())+".py"
+        with open(filename, "w") as f:
+            f.write(self.doc.content)
+        proc = subprocess.Popen(["python3", filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+        os.remove(filename)
+        output = {"ctx": "execute"}
+        if stdout:
+            output["stdout"] = stdout.decode("utf-8")
+        if stderr:
+            output["stderr"] = stderr.decode("utf-8")
+        
+        self.broadcast(socket, msgpack.packb(output))
+
+        self.running = False
 
 class ThreadedTCPServer(socketserver.ThreadingTCPServer):
 
@@ -251,7 +273,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         self.server.sessions[docid] = EditSession(docid)
                     session = self.server.sessions[docid]
                     session.register(self)
-                    self.request.sendall(msgpack.packb({"success": True, "ctx": "open", "id": doc.id, "name": doc.name}))
+                    self.request.sendall(msgpack.packb({"success": True, "ctx": "open", "id": doc.id, "name": doc.name, "text": session.content()}))
                 
                 if not session:
                     # User has no edit session
@@ -263,12 +285,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     self.request.sendall(msgpack.packb({"success": True, "ctx": "text", "text": session.content()}))
                 
                 elif o["action"] == "edit" and "patch" in o:
+                    # Updating text
                     logging.info(f"{self.user.username} {o}")
                     session.update_text(self, o["patch"])
 
                 elif o["action"] == "execute":
                     # Execute script
-                    pass
+                    session.execute(self)
 
                 elif o["action"] == "close":
                     # Close
