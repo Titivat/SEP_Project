@@ -3,20 +3,20 @@ from PySide2.QtWidgets import *
 from PySide2.QtNetwork import *
 from PySide2.QtGui import *
 from diff_match_patch import diff_match_patch
-from Editor import Editor
+from Editor_view import Editor_view
 import logging
 import msgpack
 import sys
+import os 
 from random import randint
 
 logging.basicConfig(level=logging.INFO)
 
 dmp = diff_match_patch()
 
-class Editor_control(QMainWindow):
-
-    def __init__(self, parent=None):
-        QMainWindow.__init__(self, parent)
+class Editor_control(QWidget):
+    def __init__(self, parent=None ):
+        QWidget.__init__(self, parent)
 
         self.socket = QTcpSocket(self)
         self.socket.waitForConnected(1000)
@@ -24,19 +24,22 @@ class Editor_control(QMainWindow):
         self.socket.error.connect(self.on_error)
         self.connect("127.0.0.1", 5000)
 
+        self._message_box =  QMessageBox()
+
+        self.unpacker = msgpack.Unpacker()
+        #self.socket = socket
+
         self.setGeometry(400, 400, 800, 400)
 
         self.unpacker = msgpack.Unpacker()
 
-        self.editor = Editor(self.socket)
-        self.editor.change_evt.connect(self.on_change)
+        self.editor = Editor_view( self ,self.socket )
+        self.editor.editor.change_evt.connect(self.on_change)
 
-        file_toolbar = QToolBar("File")
-        file_toolbar.setIconSize(QSize(14, 14))
-        self.addToolBar(file_toolbar)
-        #file_menu = self.menuBar().addMenu("&File")
+        layout = QVBoxLayout()
+        layout.addWidget( self.editor )
 
-        self.setCentralWidget(self.editor)
+        self.setLayout(layout)
 
     def connect(self, host, port):
         self.socket.connectToHost(host, port, QIODevice.ReadWrite)
@@ -50,7 +53,7 @@ class Editor_control(QMainWindow):
         self.unpacker.feed(buf)
         for data in self.unpacker:
             logging.info(f"[SERVER] {data}")
-            self.editor.update_text(data)
+            self.editor.editor.update_text(data)
 
     def on_error(self, socketError):
         logging.error(socketError)
@@ -65,7 +68,6 @@ def main():
     main = Editor_control()
 
     main.show()
-
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
