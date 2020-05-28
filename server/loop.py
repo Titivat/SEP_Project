@@ -44,10 +44,12 @@ class EditSession:
     def content(self):
         return self.doc.content
     
-    def broadcast(self, socket, data):
+    def broadcast(self, socket, data, all=False):
         for client in self.clients:
-            if client is not socket:
-                client.request.sendall(data)
+            if not all:
+                if client is socket:
+                    continue
+            client.request.sendall(data)
 
     def execute(self, socket):
         if self.running:
@@ -66,7 +68,7 @@ class EditSession:
         if stderr:
             output["stderr"] = stderr.decode("utf-8")
         
-        self.broadcast(socket, msgpack.packb(output))
+        self.broadcast(socket, msgpack.packb(output), all=True)
 
         self.running = False
 
