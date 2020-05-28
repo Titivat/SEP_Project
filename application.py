@@ -1,5 +1,6 @@
 from loginPage import login_controler
 from menuPage import menu_controler, document_form
+from client import Editor_control
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 from PySide2.QtCore import *
@@ -8,7 +9,7 @@ import msgpack
 import sys
 
 class Application( QMainWindow ):
-
+###
     def __init__( self ):
         QMainWindow.__init__(self, None)
 
@@ -18,15 +19,17 @@ class Application( QMainWindow ):
         self.socket.error.connect(self.on_error)
         self.connect("127.0.0.1", 5000)
 
-        self._message_box = QMessageBox()
+        self._message_box =  QMessageBox()
 
         self.unpacker = msgpack.Unpacker()
+
+        self.editor = Editor_control.Editor_control( self.socket )
 
         self.menu_page = menu_controler.Menu_controler( self.socket )
 
         self.login_page = login_controler.Login_controler( self.socket )
         self.login_page.show()
- 
+
     def connect(self, host, port):
         self.socket.connectToHost(host, port, QIODevice.ReadWrite)
 
@@ -41,11 +44,9 @@ class Application( QMainWindow ):
             print( (f"[SERVER] {data}") )
             if data["ctx"] == "register":
                 if data["success"]:
-                    self._message_box.setText(str('register success' ))
-                    self._message_box.show()
+                    self.message_box_message( str('register success' ) )
                 else :
-                    self._message_box.setText(str('fail register ' + data["err"] ))
-                    self._message_box.show()
+                    self.message_box_message( str('fail register ' + data["err"] ) )
 
             if data["ctx"] == "login":
                 if data["success"]:
@@ -53,25 +54,45 @@ class Application( QMainWindow ):
                     self.menu_page.load_my_document()
                     self.menu_page.show()
                 else:
-                    self._message_box.setText(str('fail login ' +  data["err"] ))
-                    self._message_box.show()
+                    self.message_box_message( str('fail login ' +  data["err"] ) )
 
             if data["ctx"] == "create":
-                print("create sucessfull1")
+                if data["success"]:
+                    self.menu_page.add_list_view( data["name"], data["id"] )
+
+            if data["ctx"] == "add":
                 if data["success"]:
                     self.menu_page.add_list_view( data["name"], data["id"] )
 
             if data["ctx"] == "documents":
-                print("hello")
                 for document in data["documents"]:
                     self.menu_page.add_list_view( document["name"], document["id"] )
 
             if data["ctx"] == "shareddocuments":
                 for document in data["documents"]:
                     self.menu_page.add_list_view( document["name"], document["id"] )
+            
+            if data["ctx"] == "open":
+                self.menu_page.close()
+                self.editor.editor.editor.update_text(data)
+                self.editor.show()
+
+            if data["ctx"] == "edit":
+                self.editor.editor.editor.update_text(data)
+
+            if data["ctx"] == "execute":
+                if data["success"]:
+                    self.editor.editor.console.insertPlainText( data["stdout"] )
+                else:
+                    self.editor.editor.console.insertPlainText( data["stderr"] )
 
     def on_error(self, socketError):
         print( socketError )
+        self.message_box_message( "socketError" )
+    
+    def message_box_message( self , message ):
+        self._message_box.setText(str( message ))
+        self._message_box.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

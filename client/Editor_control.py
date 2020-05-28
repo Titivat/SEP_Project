@@ -3,7 +3,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtNetwork import *
 from PySide2.QtGui import *
 from diff_match_patch import diff_match_patch
-from Editor_view import Editor_view
+from .Editor_view import Editor_view
 import logging
 import msgpack
 import sys
@@ -12,17 +12,10 @@ from random import randint
 
 logging.basicConfig(level=logging.INFO)
 
-dmp = diff_match_patch()
-
 class Editor_control(QWidget):
-    def __init__(self, parent=None ):
-        QWidget.__init__(self, parent)
-
-        self.socket = QTcpSocket(self)
-        self.socket.waitForConnected(1000)
-        self.socket.readyRead.connect(self.on_read)
-        self.socket.error.connect(self.on_error)
-        self.connect("127.0.0.1", 5000)
+    def __init__( self , socket ):
+        super( Editor_control , self).__init__()
+        self.socket = socket
 
         self._message_box =  QMessageBox()
 
@@ -34,7 +27,7 @@ class Editor_control(QWidget):
         self.unpacker = msgpack.Unpacker()
 
         self.editor = Editor_view( self ,self.socket )
-        self.editor.editor.change_evt.connect(self.on_change)
+        self.editor.editor.change_evt.connect( self.on_change )
 
         layout = QVBoxLayout()
         layout.addWidget( self.editor )
@@ -59,7 +52,7 @@ class Editor_control(QWidget):
         logging.error(socketError)
     
     def on_change(self, diff):
-        bin = msgpack.packb({"patch": diff}, use_bin_type=True)
+        bin = msgpack.packb({"action":"edit", "patch": diff}, use_bin_type=True)
         self.socket.write(bin)
 
 def main():
@@ -70,5 +63,5 @@ def main():
     main.show()
     sys.exit(app.exec_())
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()

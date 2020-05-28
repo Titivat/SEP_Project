@@ -53,11 +53,14 @@ class Menu_controler( QWidget ):
 
         if not add:
             pass
-        else:
+        elif self.on_share_drive == False:
             self.socket.write( msgpack.packb({"action":"create", "name": document_name  })) 
+
+        elif self.on_share_drive == True:
+            self.socket.write( msgpack.packb({"action":"add", "id": document_name  })) 
             
     def add_list_view( self , name , id ):
-        new_dociment = Document_Form(  self  , self.socket )
+        new_dociment = Document_Form(  self  , self.socket , self.on_share_drive )
         new_dociment.set_document_name( name )
         new_dociment.set_document_id( id )
 

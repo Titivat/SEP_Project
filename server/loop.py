@@ -39,7 +39,7 @@ class EditSession:
         
         self.doc.content = text
 
-        self.broadcast(socket, msgpack.packb({"ctx": "edit", "patch": patch}))
+        self.broadcast(socket, msgpack.packb({"success": True, "ctx": "edit", "patch": patch}))
     
     def content(self):
         return self.doc.content
@@ -59,13 +59,15 @@ class EditSession:
         filename = str(datetime.datetime.now().timestamp())+".py"
         with open(filename, "w") as f:
             f.write(self.doc.content)
-        proc = subprocess.Popen(["python3", filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(["python", filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         os.remove(filename)
         output = {"ctx": "execute"}
         if stdout:
+            output["success"] = True
             output["stdout"] = stdout.decode("utf-8")
         if stderr:
+            output["success"] = False
             output["stderr"] = stderr.decode("utf-8")
         
         self.broadcast(socket, msgpack.packb(output), all=True)
@@ -230,12 +232,11 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         logging.error("document not found")
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": "document not found"}))
                         continue
-                    users = db.query(User).filter(User.username.in_(participants)).all()
                     if self.user not in doc.participants:
                         doc.participants.append(self.user)
                     try:
                         db.commit()
-                        self.request.sendall(msgpack.packb({"success": True, "ctx": "add"}))
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "add", "id": docid, "name": doc.name}))
                     except Exception as e:
                         db.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "add", "err": str(e)}))
@@ -243,7 +244,6 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 elif o["action"] == "remove" and "id" in o:
                     # Remove participants from document
                     docid = o["id"]
-                    participants = o["participants"]
                     doc = db.query(Document).filter(Document.id==docid).first()
                     if not doc:
                         logging.error("document not found")
@@ -253,7 +253,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                         doc.participants.remove(self.user)
                     try:
                         db.commit()
-                        self.request.sendall(msgpack.packb({"success": True, "ctx": "remove"}))
+                        self.request.sendall(msgpack.packb({"success": True, "ctx": "remove", "id": docid, "name": doc.name}))
                     except Exception as e:
                         db.rollback()
                         self.request.sendall(msgpack.packb({"success": False, "ctx": "remove", "err": str(e)}))

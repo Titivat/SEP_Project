@@ -6,8 +6,10 @@ import PySide2.QtGui
 import msgpack
 
 class Document_Form(QDialog):
-    def __init__( self , parent = None , socket = None ):
+    def __init__( self , parent = None , socket = None , is_share_documnet = None):
         super( Document_Form , self).__init__( parent )
+        self.is_share_documnet = is_share_documnet
+
         self.parent = parent
 
         self.socket = socket
@@ -57,8 +59,15 @@ class Document_Form(QDialog):
         self.widgetText.setText( name )
 
     def openDocument( self ):
-        pass
+        print( self.document_id )
+        self.socket.write(msgpack.packb({"action":"open","id": self.document_id })) 
 
     def delete_document_button( self ):
+
         self.parent.ui.listWidget.takeItem( self.parent.ui.listWidget.row( self.itemN ) )
-        self.socket.write(msgpack.packb({"action":"delete","id": int(self.document_id) })) 
+
+        if self.is_share_documnet == True:
+            self.socket.write(msgpack.packb({"action":"remove","id": self.document_id })) 
+            return
+            
+        self.socket.write(msgpack.packb({"action":"delete","id": self.document_id })) 

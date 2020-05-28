@@ -8,6 +8,8 @@ import msgpack
 import sys
 from random import randint
 
+dmp = diff_match_patch()
+
 class Editor(QPlainTextEdit):
     upd_text = Signal(str)
     change_evt = Signal(str)
@@ -22,15 +24,9 @@ class Editor(QPlainTextEdit):
         self.text = ""
 
         self.upd_text.connect(self.update_text)
-
-        self.gettext()
     
     def setTCPSocket(self, socket):
         self.socket = socket
-    
-    def gettext(self):
-        bin = msgpack.packb({"text": True}, use_bin_type=True)
-        self.socket.write(bin)
     
     def keyPressEvent(self, e):
         QPlainTextEdit.keyPressEvent(self, e)
@@ -46,7 +42,9 @@ class Editor(QPlainTextEdit):
     
     @Slot(str)
     def update_text(self, patch):
-        if "patch" in patch:
+        if "text" in patch and patch["text"]:
+            self.text = patch["text"]
+        elif "patch" in patch:
             diff = patch["patch"]
             patches = dmp.patch_fromText(diff)
             self.text, _ = dmp.patch_apply(patches, self.text)
