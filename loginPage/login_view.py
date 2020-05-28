@@ -48,13 +48,13 @@ class Ui_Form(object):
         self.loginbutton.resize( 200 , 30 )
            
         self.useredit = QLineEdit(Form)
-        self.useredit.setObjectName(u"useredit")
+        self.useredit.setObjectName(u"")
         self.useredit.setGeometry(QRect(110, 250, 161, 41))
         self.useredit.setStyleSheet(u"background-color: rgb(255, 255, 255);")
         self.useredit.setEchoMode(QLineEdit.Normal)
 
         self.passwordedit = QLineEdit(Form)
-        self.passwordedit.setObjectName(u"passwordedit")
+        self.passwordedit.setObjectName(u"")
         self.passwordedit.setGeometry(QRect(110, 300, 161, 41))
         self.passwordedit.setEchoMode(QLineEdit.PasswordEchoOnEdit)  
 
@@ -86,10 +86,10 @@ class Ui_Form(object):
         self.passwordicon.setText("")
         self.registerbutton.setText(QCoreApplication.translate("Form", u"Register", None))
         self.useredit.setInputMask("")
-        self.useredit.setText(QCoreApplication.translate("Form", u"Username", None))
+        self.useredit.setText(QCoreApplication.translate("Form", u"", None))
         self.loginbutton.setText(QCoreApplication.translate("Form", u"Log in", None))
         self.loginicon.setText("")
-        self.passwordedit.setText(QCoreApplication.translate("Form", u"Password", None))
+        self.passwordedit.setText(QCoreApplication.translate("Form", u"", None))
         self.wallpaper.setText("")
     # retranslateUi
 
