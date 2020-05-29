@@ -128,7 +128,7 @@ class Editor_view(QWidget):
         self.show_id.setShortcut( "Ctrl+i")
         
         text_id.addAction( self.show_id )
-        #back.png
+       
         back_to_menu = QToolBar("back to menu")
         back_to_menu.setIconSize(QSize(14, 14))
         self.tool_bar.addWidget( back_to_menu )
