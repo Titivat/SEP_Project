@@ -9,7 +9,7 @@ import msgpack
 import sys
 
 class Application( QMainWindow ):
-###
+
     def __init__( self ):
         QMainWindow.__init__(self, None)
 
@@ -94,7 +94,12 @@ class Application( QMainWindow ):
 
             if data["ctx"] == "close":
                 self.editor.close()
+                self.editor.editor.console.clear()
                 self.menu_page.show()
+
+            if data["ctx"] == "logout":
+                self.menu_page.close()
+                self.login_page.show()
 
     def on_error(self, socketError):
         print( socketError )
