@@ -36,9 +36,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
         while True:
 
-            buf = self.request.recv(1024**2)
-            if not buf:
-                # Client closes socket
+            try:
+                buf = self.request.recv(1024**2)
+                if not buf:
+                    # Client closes socket
+                    break
+            except Exception as e:
+                logging.error(e)
                 break
 
             unpacker.feed(buf)
