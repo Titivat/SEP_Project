@@ -12,7 +12,6 @@ import time
 class Menu_controler( QWidget ):
     def __init__( self , socket ):
         QWidget.__init__(self, None)
-
         self.socket = socket 
 
         self.on_share_drive = False
@@ -20,8 +19,6 @@ class Menu_controler( QWidget ):
         self.unpacker = msgpack.Unpacker()
         self.ui = Ui_Form()
         self.ui.setupUi( self )
-
-        #self.load_my_document()
 
         self.ui.adddocbutton.clicked.connect( self.add_document )
         self.ui.mydrivebutton.clicked.connect( self.my_drive )
@@ -68,10 +65,9 @@ class Menu_controler( QWidget ):
         self.ui.listWidget.setItemWidget( new_dociment.getItemN() , new_dociment.getWidget() )
 
     def log_out( self ):
-        #self.socket.write(msgpack.packb({"action":"logout" })) 
-        #self.close()
-        pass
-
+        self.socket.write(msgpack.packb({"action":"logout" })) 
+        self.close()
+    
     def load_my_document( self ):
         self.ui.listWidget.clear() 
         self.socket.write(msgpack.packb({"action":"documents"}))

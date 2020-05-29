@@ -3,6 +3,7 @@ import PySide2.QtWidgets as QtWidgets
 from PySide2.QtWidgets import QListWidget, QDialog, QApplication, QVBoxLayout , QPushButton
 from PySide2.QtCore import *
 import PySide2.QtGui
+from client import Message_dialog
 import msgpack
 
 class Document_Form(QDialog):
@@ -21,20 +22,21 @@ class Document_Form(QDialog):
         self.widget = QtWidgets.QWidget()
 
         self.widgetText = QtWidgets.QLabel( "docmunet name" )
-
         open_document_button = QtWidgets.QPushButton("Open ducument")
-
         delete_document_button = QtWidgets.QPushButton("Delete ducument")
+        show_document_id_button = QtWidgets.QPushButton("Show ducument ID")
 
         widgetLayout = QtWidgets.QHBoxLayout()
 
         widgetLayout.addWidget( self.widgetText )
         widgetLayout.addWidget( open_document_button )
         widgetLayout.addWidget( delete_document_button )
+        widgetLayout.addWidget( show_document_id_button )
         widgetLayout.addStretch()
 
         open_document_button.clicked.connect( self.openDocument )
         delete_document_button.clicked.connect( self.delete_document_button )
+        show_document_id_button.clicked.connect( self.show_text_id )
 
         widgetLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.widget.setLayout(widgetLayout)
@@ -58,8 +60,12 @@ class Document_Form(QDialog):
     def set_document_name( self , name ):
         self.widgetText.setText( name )
 
+    def show_text_id( self ):
+        mesage_dialog = Message_dialog.Message_dialog( self )
+        mesage_dialog.set_editor_id( self.document_id )
+        mesage_dialog.show()
+
     def openDocument( self ):
-        print( self.document_id )
         self.socket.write(msgpack.packb({"action":"open","id": self.document_id })) 
 
     def delete_document_button( self ):
