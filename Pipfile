@@ -10,6 +10,7 @@ bcrypt = "*"
 PySide2 = "*"
 msgpack = "*"
 diff-match-patch = "*"
+pyperclip = "*"
 
 [dev-packages]
 pylint = "*"
