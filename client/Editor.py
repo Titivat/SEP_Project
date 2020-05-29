@@ -23,7 +23,7 @@ class Editor(QPlainTextEdit):
 
         self.text = ""
 
-        self.upd_text.connect(self.update_text)
+        self.upd_text.connect( self.update_text )
         
     def keyPressEvent(self, e):
         QPlainTextEdit.keyPressEvent(self, e)
