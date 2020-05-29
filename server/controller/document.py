@@ -132,6 +132,9 @@ class DocumentController(object):
     def close(self):
         response = Response("close")
 
+        if not self.has_session():
+            return
+
         self.current_session.unregister(self.socket, self.db)
         self.current_session = None
         self.socket.request.sendall(response())

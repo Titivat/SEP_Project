@@ -45,6 +45,8 @@ class Editor(QPlainTextEdit):
             diff = patch["patch"]
             patches = dmp.patch_fromText(diff)
             self.text, _ = dmp.patch_apply(patches, self.text)
+        else:
+            self.text = ""
         cursor = self.textCursor()
         old_pos = cursor.position()
         self.setPlainText(self.text)
