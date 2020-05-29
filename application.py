@@ -52,6 +52,7 @@ class Application( QMainWindow ):
                 if data["success"]:
                     self.login_page.close()
                     self.menu_page.load_my_document()
+                    self.menu_page.setWindowTitle( data["username"] )
                     self.menu_page.show()
                 else:
                     self.message_box_message( str('fail login ' +  data["err"] ) )
@@ -73,9 +74,14 @@ class Application( QMainWindow ):
                     self.menu_page.add_list_view( document["name"], document["id"] )
             
             if data["ctx"] == "open":
-                self.menu_page.close()
-                self.editor.editor.editor.update_text(data)
-                self.editor.show()
+                try:
+                    self.menu_page.close()
+                    self.editor.editor.editor.update_text(data)
+                    self.editor.set_text_id( data["id"] )
+                    self.editor.setWindowTitle( data["name"] + " document")
+                    self.editor.show()
+                except:
+                    self.menu_page.show()
 
             if data["ctx"] == "edit":
                 self.editor.editor.editor.update_text(data)
@@ -85,6 +91,9 @@ class Application( QMainWindow ):
                     self.editor.editor.console.insertPlainText( data["stdout"] )
                 else:
                     self.editor.editor.console.insertPlainText( data["stderr"] )
+
+            if data["ctx"] == "close":
+                self.menu_page.show()
 
     def on_error(self, socketError):
         print( socketError )
