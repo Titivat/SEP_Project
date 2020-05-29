@@ -296,6 +296,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                     # Close
                     session.unregister(self)
                     session = None
+                    self.request.sendall(msgpack.packb({"success": True, "ctx": "close"}))
 
         if session:
             # unregister when client close
