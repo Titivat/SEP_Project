@@ -21,10 +21,10 @@ class Document_Form(QDialog):
 
         self.widget = QtWidgets.QWidget()
 
-        self.widgetText = QtWidgets.QLabel( "docmunet name" )
-        open_document_button = QtWidgets.QPushButton("Open ducument")
-        delete_document_button = QtWidgets.QPushButton("Delete ducument")
-        show_document_id_button = QtWidgets.QPushButton("Show ducument ID")
+        self.widgetText = QtWidgets.QLabel( "document name" )
+        open_document_button = QtWidgets.QPushButton("Open document")
+        delete_document_button = QtWidgets.QPushButton("Delete document")
+        show_document_id_button = QtWidgets.QPushButton("Show document ID")
 
         widgetLayout = QtWidgets.QHBoxLayout()
 

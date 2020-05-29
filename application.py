@@ -93,6 +93,7 @@ class Application( QMainWindow ):
                     self.editor.editor.console.insertPlainText( data["stderr"] )
 
             if data["ctx"] == "close":
+                self.editor.close()
                 self.menu_page.show()
 
     def on_error(self, socketError):
