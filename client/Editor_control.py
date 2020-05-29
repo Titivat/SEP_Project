@@ -2,6 +2,7 @@ from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 from PySide2.QtNetwork import *
 from PySide2.QtGui import *
+from PySide2.QtPrintSupport import QPrinter, QPrintPreviewDialog, QPrintDialog
 from diff_match_patch import diff_match_patch
 from .Editor_view import Editor_view
 from .Message_dialog import Message_dialog
@@ -162,6 +163,9 @@ class Editor_control(QWidget):
         self.socket.write(msgpack.packb({"action": "execute"}))
 
     def file_print(self):
-        dlg = QPrintDialog()
-        if dlg.exec_():
-            self.editor.print_(dlg.printer())
+        printer = QPrinter(QPrinter.HighResolution)
+        dialog = QPrintDialog(printer, self)
+ 
+        if dialog.exec_() == QPrintDialog.Accepted:
+            self.textEdit.print_(printer)
+
