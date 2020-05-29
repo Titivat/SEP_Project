@@ -20,9 +20,8 @@ class Editor_control(QWidget):
         self._message_box =  QMessageBox()
 
         self.unpacker = msgpack.Unpacker()
-        #self.socket = socket
-
-        self.setGeometry(400, 400, 800, 400)
+        
+        self.setGeometry(0, 0, 800, 400)
 
         self.unpacker = msgpack.Unpacker()
 
@@ -33,6 +32,12 @@ class Editor_control(QWidget):
         layout.addWidget( self.editor )
 
         self.setLayout(layout)
+    def set_text_id( self , text_id ):
+        self.editor.set_text_id( text_id )
+
+    def closeEvent(self, event):
+        
+        event.accept()
 
     def connect(self, host, port):
         self.socket.connectToHost(host, port, QIODevice.ReadWrite)

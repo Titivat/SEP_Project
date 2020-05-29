@@ -19,12 +19,15 @@ class Editor_view(QWidget):
     def __init__(self, parent=None ,socket = None ):
         QWidget.__init__(self, parent)
         self.socket = socket
-       
+
+        self.text_edit_id = None 
+ 
         self.setGeometry(400, 400, 800, 400)
 
         self.unpacker = msgpack.Unpacker()
 
         self.editor = Editor( self.socket )
+        self.editor.setTabStopWidth( self.editor.fontMetrics().width(' ') * 4)
 
         self.console = QPlainTextEdit()
         self.console.setMaximumSize( 1000 , 100 )
@@ -34,7 +37,7 @@ class Editor_view(QWidget):
         self.tool_bar = QToolBar( self ) 
 
         file_toolbar = QToolBar("File")
-        file_toolbar.setIconSize(QSize(14, 14))
+        file_toolbar.setIconSize( QSize(14, 14) )
         self.tool_bar.addWidget(file_toolbar)
         file_menu = self.menu_bar.addMenu("&File")
 
@@ -97,8 +100,7 @@ class Editor_view(QWidget):
         copy_action = QAction(QIcon(os.path.join('client/images', 'document-copy.png')), "Copy", self)
         copy_action.setStatusTip("Copy selected text")
         copy_action.setShortcut( "Ctrl+c")
-        cut_action.setShortcut(QKeySequence.Copy)
-        copy_action.triggered.connect(self.editor.copy)
+        copy_action.triggered.connect( self.editor.copy )
         edit_toolbar.addAction(copy_action)
         edit_menu.addAction(copy_action)
 
@@ -112,7 +114,7 @@ class Editor_view(QWidget):
 
         select_action = QAction(QIcon(os.path.join('client/images', 'selection-input.png')), "Select all", self)
         select_action.setStatusTip("Select all text")
-        paste_action.setShortcut( "Ctrl+a")
+        select_action.setShortcut( "Ctrl+a")
         select_action.triggered.connect(self.editor.selectAll)
         edit_menu.addAction(select_action)
 
@@ -123,12 +125,24 @@ class Editor_view(QWidget):
         self.tool_bar.addWidget( run_toolbar )
         run_menu = self.menu_bar.addMenu("&Run")
 
-        debug_action = QAction(QIcon(os.path.join('client/images', 'run_icon.png')), "debug", self)
+        debug_action = QAction(QIcon( os.path.join('client/images', 'run_icon.png')), "debug", self)
         debug_action.setStatusTip("debug")
         debug_action.setShortcut( "F5")
         debug_action.triggered.connect( self.start_debuging )
         run_menu.addAction( debug_action )
         run_toolbar.addAction( debug_action )
+
+        text_id = QToolBar("Text Id")
+        text_id.setIconSize(QSize(14, 14))
+        self.tool_bar.addWidget( text_id )
+        text_id = self.menu_bar.addMenu("&Text Id")
+        
+        show_id = QAction(QIcon( os.path.join('client/images', 'show_id.jpg')), "show id", self )
+        show_id.setStatusTip("show id")
+        show_id.setShortcut( "Crt+i")
+        show_id.triggered.connect( self.show_id )
+        text_id.addAction( show_id )
+        text_id.addAction( show_id )
 
         layout = QVBoxLayout()
         layout.addWidget( self.menu_bar )
@@ -138,16 +152,17 @@ class Editor_view(QWidget):
 
         self.setLayout(layout)
 
+    def show_id( self ):
+        self.dialog_critical( self.text_edit_id )
+
+    def set_text_id( self , text_id ):
+        self.text_edit_id = text_id
+    
     def dialog_critical(self, s):
         dlg = QMessageBox(self)
         dlg.setText(s)
         dlg.setIcon(QMessageBox.Critical)
         dlg.show()
-
-    def on_change(self, diff):
-        print(f"[SENDING] {diff}")
-        bin = msgpack.packb({"action": "edit","patch": diff}, use_bin_type=True)
-        self.socket.write(bin)
     
     def start_debuging( self ):
         self.socket.write(msgpack.packb({"action": "execute"}))

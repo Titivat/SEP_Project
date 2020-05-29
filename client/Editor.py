@@ -13,7 +13,7 @@ dmp = diff_match_patch()
 class Editor(QPlainTextEdit):
     upd_text = Signal(str)
     change_evt = Signal(str)
-#hello world
+    
     def __init__(self, socket):
         super(Editor, self).__init__()
         self.socket = socket
@@ -24,10 +24,7 @@ class Editor(QPlainTextEdit):
         self.text = ""
 
         self.upd_text.connect(self.update_text)
-    
-    def setTCPSocket(self, socket):
-        self.socket = socket
-    
+        
     def keyPressEvent(self, e):
         QPlainTextEdit.keyPressEvent(self, e)
 
