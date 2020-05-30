@@ -66,8 +66,7 @@ class Menu_controler( QWidget ):
 
     def log_out( self ):
         self.socket.write(msgpack.packb({"action":"logout" })) 
-        self.close()
-    
+        
     def load_my_document( self ):
         self.ui.listWidget.clear() 
         self.socket.write(msgpack.packb({"action":"documents"}))
